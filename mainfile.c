@@ -2,6 +2,14 @@
 //It's totally free to use 
 //github: Paulo-Henrique-Silva
 
+/*
+In this version the Game Works, but: 
+    - it's not going to stop if it's a tie 
+    - it does not tell who has won
+
+# Add this later
+*/
+
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
@@ -9,7 +17,7 @@
 void createBoard();
 int isValid(int input);
 void refreshBoard(char playerSymbol, int play);
-int isVictory();
+int isVictory(char symb);
 //fuctions prototypes
 
 char board[9];
@@ -21,20 +29,26 @@ int main()
 
     createBoard(); 
 
-    do
+    while(1)
     {
-        printf("\nPlayer 1 Turn - Type your play(1 - 9): ");
+        printf("\n\nPlayer 1 Turn - Type your play(1 - 9): ");
         scanf("%d", &play);
         play = isValid(play);
         refreshBoard(PLAYER1, play);
 
-        printf("\nPlayer 2 Turn - Type your play(1 - 9): ");
+        if(isVictory(PLAYER1))
+            break; 
+
+        printf("\n\nPlayer 2 Turn - Type your play(1 - 9): ");
         scanf("%d", &play);
         play = isValid(play);
         refreshBoard(PLAYER2, play);
-    }
-    while(/*isVictory()*/0); 
 
+        if(isVictory(PLAYER2))
+            break; 
+    }
+
+    printf("\n\nEND GAME!");
     getch(); //pause before closes it
     return 0;
 }
@@ -57,15 +71,15 @@ void createBoard()
 
 int isValid(int input)
 {
-    while(input < 1 || input > 9)
+    while(input < 1 || input > 9 || board[input - 1] == 'X' || board[input - 1] == 'O')
     {
-        printf("\nType a Number between 1-9: ");
+        printf("\nInvalid input! Type again: ");
         scanf("%d", &input);
     }
 
     return input;
 }
-//checks if the user input is between the board interval
+//checks if the user input is between the board interval or if it has been taken already
 
 void refreshBoard(char playerSymbol, int play)
 {
@@ -80,7 +94,30 @@ void refreshBoard(char playerSymbol, int play)
 }
 //refreshs the board with the last player move
 
-int isVictory()
+int isVictory(char symb)
 {
+    //rows
+    if(board[0] == symb && board[1] == symb && board[2] == symb)
+        return 1;
+    if(board[3] == symb && board[4] == symb && board[5] == symb)
+        return 1;
+    if(board[6] == symb && board[7] == symb && board[8] == symb)
+        return 1;
 
+    //columns
+    if(board[0] == symb && board[3] == symb && board[6] == symb)
+        return 1;
+    if(board[1] == symb && board[4] == symb && board[7] == symb)
+        return 1;
+    if(board[2] == symb && board[5] == symb && board[8] == symb)
+        return 1;
+
+    //diagonals
+    if(board[0] == symb && board[4] == symb && board[8] == symb)
+        return 1;
+    if(board[2] == symb && board[4] == symb && board[6] == symb)
+        return 1;
+
+    return 0; //if every case don't matches, will return false. Therefore, anyone hasn't won.
 }
+//checks if it's a victory
