@@ -2,8 +2,6 @@
 //It's totally free to use 
 //github: Paulo-Henrique-Silva
 
-//in this version, the computer can attack, defend and randomly. 
-
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
@@ -11,7 +9,9 @@
 
 char board[9];
 char winnerSymbol;
-int play = 0; //this is the player move
+int play = 0, iaDifficult; 
+
+enum difficult {easy = 1, medium, hard};
 
 void PlayerVsPlayer(); 
 void PlayerVsIA();
@@ -73,7 +73,7 @@ void PlayerVsPlayer()
 
     createBoard(); 
 
-    while(1)
+    while(1) //continues the game "forever", until someone wins
     {
         printf("\n\nPlayer 1 Turn - Type your play(1 - 9): ");
         scanf("%d", &play);
@@ -105,12 +105,29 @@ void PlayerVsPlayer()
     else
         printf("\nIT'S A TIE!");
 }
-//this the player vs player mode
+//this is the player vs player mode
 
 void PlayerVsIA()
 {
     const char PLAYER = 'X', COMPUTER = 'O';
 
+    do
+    {
+        system("cls");
+        printf("\t\t\tDIFFICULT SELECTOR\n");
+        printf("\n\t\t\t[1] - Easy");
+        printf("\n\t\t\t[2] - Medium");
+        printf("\n\t\t\t[3] - Hard");
+        printf("\n\nType: ");
+        scanf("%d", &iaDifficult);
+
+        if(iaDifficult < 1 || iaDifficult > 3)
+        {
+            printf("Invalid Input. Type Again!");
+            getch();
+        }
+    } while(iaDifficult < 1 || iaDifficult > 3);
+    
     system("cls");
     createBoard(); 
 
@@ -147,9 +164,20 @@ void PlayerVsIA()
 
 void computerPlay()
 { 
-    switch(1)
+    switch(iaDifficult)
     {
-        case 1: 
+        case easy: //just play
+            computerRandom();
+            break;
+
+        case medium: //tries to defend
+            if(computerDefend())
+                break;
+            else
+                computerRandom();
+            break;
+
+        case hard: //tries to attack and defend
             if(computerAttack())
                 break;
             else if(computerDefend())
@@ -161,7 +189,6 @@ void computerPlay()
         //if it cant's, then will try to defend
         //if it does not need a defense, will just play randomly
     }  
-    //this will be a difficult selector later
 }
 
 int computerAttack()
@@ -175,7 +202,7 @@ int computerAttack()
     {
         if(board[i] == 'O' && board[i+1] == 'O' && (board[i+2] != 'X' && board[i+2] != 'O'))
         {
-            play = i + 3;
+            play = i + 3; //it's not i + 2, because the invertal is 0-8
             return 1; //if it returns 1, it means that it was need a defense
         }
         else if(board[i] == 'O' && (board[i+1] != 'X' && board[i+1] != 'O') && board[i+2] == 'O' )
