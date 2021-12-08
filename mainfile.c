@@ -2,8 +2,6 @@
 //It's totally free to use 
 //github: Paulo-Henrique-Silva
 
-//it does not have the IA mode yet
-
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
@@ -18,6 +16,7 @@ void PlayerVsIA();
 void createBoard();
 void isValid();
 void refreshBoard(char playerSymbol);
+void computerPlay();
 int isVictory(char symb);
 int isTie();
 //fuctions prototypes
@@ -43,6 +42,7 @@ int main()
                 PlayerVsPlayer();
                 break;
             case 2:
+                PlayerVsIA();
                 break;
             case 3:
                 printf("Exiting...");
@@ -72,7 +72,6 @@ void PlayerVsPlayer()
         isValid();
 
         system("cls"); //clean the screen for the next move
-
         refreshBoard(PLAYER1);
 
         if(isVictory(PLAYER1) || isTie())
@@ -83,7 +82,6 @@ void PlayerVsPlayer()
         isValid();
 
         system("cls");
-
         refreshBoard(PLAYER2);
 
         if(isVictory(PLAYER2) || isTie())
@@ -93,13 +91,60 @@ void PlayerVsPlayer()
     printf("\n\nEND GAME!");
 
     if(winnerSymbol == 'X')
-        printf("\nPALYER 1 WINS");
+        printf("\nPLAYER 1 WINS");
     else if(winnerSymbol == 'O')
-        printf("\nPALYER 2 WINS");
+        printf("\nPLAYER 2 WINS");
     else
         printf("\nIT'S A TIE!");
 }
 //this the player vs player mode
+
+void PlayerVsIA()
+{
+    system("cls");
+    const char PLAYER = 'X', COMPUTER = 'O';
+    
+    createBoard(); 
+
+    while(1)
+    {
+        printf("\n\nPlayer Turn - Type your play(1 - 9): ");
+        scanf("%d", &play);
+        isValid();
+
+        system("cls"); //clean the screen for the next move
+        refreshBoard(PLAYER);
+
+        if(isVictory(PLAYER) || isTie())
+            break; 
+
+        system("cls");
+        computerPlay();
+        refreshBoard(COMPUTER);
+
+        if(isVictory(COMPUTER) || isTie())
+            break; 
+    }
+
+    printf("\n\nEND GAME!");
+
+    if(winnerSymbol == 'X')
+        printf("\nPLAYER WINS");
+    else if(winnerSymbol == 'O')
+        printf("\nCOMPUTER WINS");
+    else
+        printf("\nIT'S A TIE!");
+}
+//PLAYER vs IA
+
+void computerPlay()
+{   
+    srand(time(0)); //a random seed to generate a random number
+
+    do
+        play = rand() % 9 + 1; //a num between 9 and 1
+    while(board[play - 1] == 'X' || board[play - 1] == 'O');
+}
 
 void createBoard()
 {
