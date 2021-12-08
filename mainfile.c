@@ -2,6 +2,8 @@
 //It's totally free to use 
 //github: Paulo-Henrique-Silva
 
+//in this version, the computer can attack, defend and randomly. 
+
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
@@ -13,10 +15,16 @@ int play = 0; //this is the player move
 
 void PlayerVsPlayer(); 
 void PlayerVsIA();
+
 void createBoard();
 void isValid();
 void refreshBoard(char playerSymbol);
-int computerPlay();
+
+void computerPlay();
+int computerAttack();
+int computerDefend();
+void computerRandom();
+
 int isVictory(char symb);
 int isTie();
 //fuctions prototypes
@@ -137,49 +145,151 @@ void PlayerVsIA()
 }
 //PLAYER vs IA
 
-int computerPlay()
-{   
+void computerPlay()
+{ 
+    switch(1)
+    {
+        case 1: 
+            if(computerAttack())
+                break;
+            else if(computerDefend())
+                break;
+            else
+                computerRandom();
+            break;
+        //the computer will check if it cans attacks
+        //if it cant's, then will try to defend
+        //if it does not need a defense, will just play randomly
+    }  
+    //this will be a difficult selector later
+}
+
+int computerAttack()
+{
     int i;
 
-//the computer, in the next lines, will defend itself against a possible defeat
+//the computer, in the next lines, will try to find if it can attack and finish the game 
 
     //rows
-    for(i = 0; i < 6; i+=3)
+    for(i = 0; i <= 6; i+=3)
     {
-        if(board[i] == 'X' && board[i+1] == 'X' && (board[i+2] != 'X' && board[i+2] != 'O'))
+        if(board[i] == 'O' && board[i+1] == 'O' && (board[i+2] != 'X' && board[i+2] != 'O'))
         {
             play = i + 3;
-            return 0;
+            return 1; //if it returns 1, it means that it was need a defense
         }
-        else if(board[i] == 'X' && (board[i+1] != 'X' && board[i+1] != 'O') && board[i+2] == 'X' )
+        else if(board[i] == 'O' && (board[i+1] != 'X' && board[i+1] != 'O') && board[i+2] == 'O' )
         {
             play = i + 2;
-            return 0;
+            return 1;
         }
-        else if((board[i] != 'X' && board[i] != 'O') && board[i+1] == 'X' && board[i+2] == 'X' )
+        else if((board[i] != 'X' && board[i] != 'O') && board[i+1] == 'O' && board[i+2] == 'O' )
         {
             play = i + 1;
-            return 0;
+            return 1;
         }
     }
 
     //columns
-    for(i = 0; i < 2; i++)
+    for(i = 0; i <= 2; i++)
+    {
+        if(board[i] == 'O' && board[i+3] == 'O' && (board[i+6] != 'X' && board[i+6] != 'O'))
+        {
+            play = i + 7;
+            return 1;
+        }
+        else if(board[i] == 'O' && (board[i+3] != 'X' && board[i+3] != 'O') && board[i+6] == 'O' )
+        {
+            play = i + 4;
+            return 1;
+        }
+        else if((board[i] != 'X' && board[i] != 'O') && board[i+3] == 'O' && board[i+6] == 'O' )
+        {
+            play = i + 1;
+            return 1;
+        }
+    }
+    
+    //main diagonal
+    if(board[0] == 'O' && board[4] == 'O' && (board[8] != 'X' && board[8] != 'O'))
+    {
+        play = 9;
+        return 1;
+    }
+    else if(board[0] == 'O' && (board[4] != 'X' && board[4] != 'O') && board[8] == 'O' )
+    {
+        play = 5;
+        return 1;
+    }
+    else if((board[0] != 'X' && board[0] != 'O') && board[4] == 'O' && board[8] == 'O' )
+    {
+        play = 1;
+        return 1;
+    }
+
+    //second diagonal
+    if(board[2] == 'O' && board[4] == 'O' && (board[6] != 'X' && board[6] != 'O'))
+    {
+        play = 7;
+        return 1;
+    }
+    else if(board[2] == 'O' && (board[4] != 'X' && board[4] != 'O') && board[6] == 'O' )
+    {
+        play = 5;
+        return 1;
+    }
+    else if((board[2] != 'X' && board[2] != 'O') && board[4] == 'O' && board[6] == 'O' )
+    {
+        play = 3;
+        return 1;
+    }
+
+    return 0; //if does not need, returns 0(no)
+}
+
+int computerDefend()
+{
+    int i;
+
+//the computer, in the next lines, will defend itself against a possible defeat(if it needs)
+
+    //rows
+    for(i = 0; i <= 6; i+=3)
+    {
+        if(board[i] == 'X' && board[i+1] == 'X' && (board[i+2] != 'X' && board[i+2] != 'O'))
+        {
+            play = i + 3;
+            return 1; //if it returns 1, it means that it was need a defense
+        }
+        else if(board[i] == 'X' && (board[i+1] != 'X' && board[i+1] != 'O') && board[i+2] == 'X' )
+        {
+            play = i + 2;
+            return 1;
+        }
+        else if((board[i] != 'X' && board[i] != 'O') && board[i+1] == 'X' && board[i+2] == 'X' )
+        {
+            play = i + 1;
+            return 1;
+        }
+    }
+
+    //columns
+    for(i = 0; i <= 2; i++)
     {
         if(board[i] == 'X' && board[i+3] == 'X' && (board[i+6] != 'X' && board[i+6] != 'O'))
         {
             play = i + 7;
-            return 0;
+            return 1;
         }
         else if(board[i] == 'X' && (board[i+3] != 'X' && board[i+3] != 'O') && board[i+6] == 'X' )
         {
             play = i + 4;
-            return 0;
+            return 1;
         }
         else if((board[i] != 'X' && board[i] != 'O') && board[i+3] == 'X' && board[i+6] == 'X' )
         {
             play = i + 1;
-            return 0;
+            return 1;
         }
     }
     
@@ -187,37 +297,41 @@ int computerPlay()
     if(board[0] == 'X' && board[4] == 'X' && (board[8] != 'X' && board[8] != 'O'))
     {
         play = 9;
-        return 0;
+        return 1;
     }
     else if(board[0] == 'X' && (board[4] != 'X' && board[4] != 'O') && board[8] == 'X' )
     {
         play = 5;
-        return 0;
+        return 1;
     }
     else if((board[0] != 'X' && board[0] != 'O') && board[4] == 'X' && board[8] == 'X' )
     {
         play = 1;
-        return 0;
+        return 1;
     }
 
     //second diagonal
     if(board[2] == 'X' && board[4] == 'X' && (board[6] != 'X' && board[6] != 'O'))
     {
         play = 7;
-        return 0;
+        return 1;
     }
     else if(board[2] == 'X' && (board[4] != 'X' && board[4] != 'O') && board[6] == 'X' )
     {
         play = 5;
-        return 0;
+        return 1;
     }
     else if((board[2] != 'X' && board[2] != 'O') && board[4] == 'X' && board[6] == 'X' )
     {
         play = 3;
-        return 0;
+        return 1;
     }
 
-    //if it does not need a defense, the computer will just random play
+    return 0;
+}
+
+void computerRandom()
+{
     srand(time(0)); //a random seed to generate a random number
 
     do
