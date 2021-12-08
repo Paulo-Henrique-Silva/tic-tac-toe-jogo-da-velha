@@ -2,19 +2,22 @@
 //It's totally free to use 
 //github: Paulo-Henrique-Silva
 
-//it does have the PvsI.A mode yet
+//it does not have the IA mode yet
 
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
+#include <time.h> 
 
 char board[9];
 char winnerSymbol;
+int play = 0; //this is the player move
 
 void PlayerVsPlayer(); 
+void PlayerVsIA();
 void createBoard();
-int isValid(int input);
-void refreshBoard(char playerSymbol, int play);
+void isValid();
+void refreshBoard(char playerSymbol);
 int isVictory(char symb);
 int isTie();
 //fuctions prototypes
@@ -59,30 +62,29 @@ void PlayerVsPlayer()
 {
     system("cls");
     const char PLAYER1 = 'X', PLAYER2 = 'O';
-    int play;
-
+    
     createBoard(); 
 
     while(1)
     {
         printf("\n\nPlayer 1 Turn - Type your play(1 - 9): ");
         scanf("%d", &play);
-        play = isValid(play);
+        isValid();
 
         system("cls"); //clean the screen for the next move
 
-        refreshBoard(PLAYER1, play);
+        refreshBoard(PLAYER1);
 
         if(isVictory(PLAYER1) || isTie())
             break; 
 
         printf("\n\nPlayer 2 Turn - Type your play(1 - 9): ");
         scanf("%d", &play);
-        play = isValid(play);
+        isValid();
 
         system("cls");
 
-        refreshBoard(PLAYER2, play);
+        refreshBoard(PLAYER2);
 
         if(isVictory(PLAYER2) || isTie())
             break; 
@@ -116,19 +118,17 @@ void createBoard()
 }
 //it creates the game board
 
-int isValid(int input)
+void isValid()
 {
-    while(input < 1 || input > 9 || board[input - 1] == 'X' || board[input - 1] == 'O')
+    while(play < 1 || play > 9 || board[play - 1] == 'X' || board[play - 1] == 'O')
     {
-        printf("Invalid input! Type again: ");
-        scanf("%d", &input);
+        printf("Invalid play! Type again: ");
+        scanf("%d", &play);
     }
-
-    return input;
 }
 //checks if the user input is between the board interval or if it has been taken already
 
-void refreshBoard(char playerSymbol, int play)
+void refreshBoard(char playerSymbol)
 { 
     play--;
     board[play] = playerSymbol;
@@ -142,33 +142,33 @@ void refreshBoard(char playerSymbol, int play)
 }
 //refreshs the board with the last player move
 
-int isVictory(char symb)
+int isVictory(char playerSymbol)
 {
     //rows
     if
     (
-        (board[0] == symb && board[1] == symb && board[2] == symb) ||   
-        (board[3] == symb && board[4] == symb && board[5] == symb) ||    
-        (board[6] == symb && board[7] == symb && board[8] == symb)
+        (board[0] == playerSymbol && board[1] == playerSymbol && board[2] == playerSymbol) ||   
+        (board[3] == playerSymbol && board[4] == playerSymbol && board[5] == playerSymbol) ||    
+        (board[6] == playerSymbol && board[7] == playerSymbol && board[8] == playerSymbol)
     )
-        winnerSymbol = symb;
+        winnerSymbol = playerSymbol;
 
     //columns
     if
     (
-        (board[0] == symb && board[3] == symb && board[6] == symb) ||
-        (board[1] == symb && board[4] == symb && board[7] == symb) ||
-        (board[2] == symb && board[5] == symb && board[8] == symb)
+        (board[0] == playerSymbol && board[3] == playerSymbol && board[6] == playerSymbol) ||
+        (board[1] == playerSymbol && board[4] == playerSymbol && board[7] == playerSymbol) ||
+        (board[2] == playerSymbol && board[5] == playerSymbol && board[8] == playerSymbol)
     )
-        winnerSymbol = symb;
+        winnerSymbol = playerSymbol;
 
     //diagonals
     if
     (
-        (board[0] == symb && board[4] == symb && board[8] == symb) ||
-        (board[2] == symb && board[4] == symb && board[6] == symb)
+        (board[0] == playerSymbol && board[4] == playerSymbol && board[8] == playerSymbol) ||
+        (board[2] == playerSymbol && board[4] == playerSymbol && board[6] == playerSymbol)
     )
-        winnerSymbol = symb;
+        winnerSymbol = playerSymbol;
 
     if(winnerSymbol != ' ')
         return 1;
