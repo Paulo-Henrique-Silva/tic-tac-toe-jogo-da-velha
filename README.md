@@ -14,4 +14,4 @@ No programa, é permitido que o usário escolha entre dois modos:
 # Informações Adicionais
 O principal objetivo deste projeto é o aprendizado, portanto o uso do código fonte é **totalmente livre**.
 
-O arquivo .exe do programa só funciona no Sistema Operacinal Windows.
+O arquivo .exe do programa só funciona no Sistema Operacional Windows.
