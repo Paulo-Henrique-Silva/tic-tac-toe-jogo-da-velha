@@ -7,11 +7,14 @@
 #include <stdlib.h>
 #include <time.h> 
 
+#define ISEMPTY(boardNum) board[boardNum] != 'O' && board[boardNum] != 'X'
+
 char board[9];
 char winnerSymbol;
 int play = 0, iaDifficult; 
 
 enum difficult {easy = 1, medium, hard};
+enum gameMenu {PvP = 1, PvC, exitProgram};
 
 void PlayerVsPlayer(); 
 void PlayerVsIA();
@@ -33,7 +36,7 @@ int main()
 {
     int operation = 0;
 
-    while(operation != 3)
+    do
     {
         system("cls"); //clean the screen
 
@@ -46,13 +49,13 @@ int main()
 
         switch(operation)
         {
-            case 1:
+            case PvP:
                 PlayerVsPlayer();
                 break;
-            case 2:
+            case PvC:
                 PlayerVsIA();
                 break;
-            case 3:
+            case exitProgram:
                 printf("Exiting...");
                 break;
             default:
@@ -61,7 +64,8 @@ int main()
         }
 
         getch(); //pause before closes it
-    }
+        
+    } while(operation != exitProgram);
 
     return 0;
 }
@@ -200,17 +204,17 @@ int computerAttack()
     //rows
     for(i = 0; i <= 6; i+=3)
     {
-        if(board[i] == 'O' && board[i+1] == 'O' && (board[i+2] != 'X' && board[i+2] != 'O'))
+        if(board[i] == 'O' && board[i+1] == 'O' && ISEMPTY(i+2))
         {
             play = i + 3; //it's not i + 2, because the invertal is 0-8
             return 1; //if it returns 1, it means that it was need a defense
         }
-        else if(board[i] == 'O' && (board[i+1] != 'X' && board[i+1] != 'O') && board[i+2] == 'O' )
+        else if(board[i] == 'O' && ISEMPTY(i+1) && board[i+2] == 'O' )
         {
             play = i + 2;
             return 1;
         }
-        else if((board[i] != 'X' && board[i] != 'O') && board[i+1] == 'O' && board[i+2] == 'O' )
+        else if(ISEMPTY(i) && board[i+1] == 'O' && board[i+2] == 'O' )
         {
             play = i + 1;
             return 1;
@@ -220,17 +224,17 @@ int computerAttack()
     //columns
     for(i = 0; i <= 2; i++)
     {
-        if(board[i] == 'O' && board[i+3] == 'O' && (board[i+6] != 'X' && board[i+6] != 'O'))
+        if(board[i] == 'O' && board[i+3] == 'O' && ISEMPTY(i+6))
         {
             play = i + 7;
             return 1;
         }
-        else if(board[i] == 'O' && (board[i+3] != 'X' && board[i+3] != 'O') && board[i+6] == 'O' )
+        else if(board[i] == 'O' && ISEMPTY(i+3) && board[i+6] == 'O' )
         {
             play = i + 4;
             return 1;
         }
-        else if((board[i] != 'X' && board[i] != 'O') && board[i+3] == 'O' && board[i+6] == 'O' )
+        else if(ISEMPTY(i) && board[i+3] == 'O' && board[i+6] == 'O' )
         {
             play = i + 1;
             return 1;
@@ -238,34 +242,34 @@ int computerAttack()
     }
     
     //main diagonal
-    if(board[0] == 'O' && board[4] == 'O' && (board[8] != 'X' && board[8] != 'O'))
+    if(board[0] == 'O' && board[4] == 'O' && ISEMPTY(8))
     {
         play = 9;
         return 1;
     }
-    else if(board[0] == 'O' && (board[4] != 'X' && board[4] != 'O') && board[8] == 'O' )
+    else if(board[0] == 'O' && ISEMPTY(4) && board[8] == 'O' )
     {
         play = 5;
         return 1;
     }
-    else if((board[0] != 'X' && board[0] != 'O') && board[4] == 'O' && board[8] == 'O' )
+    else if(ISEMPTY(0) && board[4] == 'O' && board[8] == 'O' )
     {
         play = 1;
         return 1;
     }
 
     //second diagonal
-    if(board[2] == 'O' && board[4] == 'O' && (board[6] != 'X' && board[6] != 'O'))
+    if(board[2] == 'O' && board[4] == 'O' && ISEMPTY(6))
     {
         play = 7;
         return 1;
     }
-    else if(board[2] == 'O' && (board[4] != 'X' && board[4] != 'O') && board[6] == 'O' )
+    else if(board[2] == 'O' && ISEMPTY(4) && board[6] == 'O' )
     {
         play = 5;
         return 1;
     }
-    else if((board[2] != 'X' && board[2] != 'O') && board[4] == 'O' && board[6] == 'O' )
+    else if(ISEMPTY(2) && board[4] == 'O' && board[6] == 'O' )
     {
         play = 3;
         return 1;
@@ -283,17 +287,17 @@ int computerDefend()
     //rows
     for(i = 0; i <= 6; i+=3)
     {
-        if(board[i] == 'X' && board[i+1] == 'X' && (board[i+2] != 'X' && board[i+2] != 'O'))
+        if(board[i] == 'X' && board[i+1] == 'X' && ISEMPTY(i+2))
         {
             play = i + 3;
             return 1; //if it returns 1, it means that it was need a defense
         }
-        else if(board[i] == 'X' && (board[i+1] != 'X' && board[i+1] != 'O') && board[i+2] == 'X' )
+        else if(board[i] == 'X' && ISEMPTY(i+1) && board[i+2] == 'X' )
         {
             play = i + 2;
             return 1;
         }
-        else if((board[i] != 'X' && board[i] != 'O') && board[i+1] == 'X' && board[i+2] == 'X' )
+        else if(ISEMPTY(i) && board[i+1] == 'X' && board[i+2] == 'X' )
         {
             play = i + 1;
             return 1;
@@ -303,17 +307,17 @@ int computerDefend()
     //columns
     for(i = 0; i <= 2; i++)
     {
-        if(board[i] == 'X' && board[i+3] == 'X' && (board[i+6] != 'X' && board[i+6] != 'O'))
+        if(board[i] == 'X' && board[i+3] == 'X' && ISEMPTY(i+6))
         {
             play = i + 7;
             return 1;
         }
-        else if(board[i] == 'X' && (board[i+3] != 'X' && board[i+3] != 'O') && board[i+6] == 'X' )
+        else if(board[i] == 'X' && ISEMPTY(i+3) && board[i+6] == 'X' )
         {
             play = i + 4;
             return 1;
         }
-        else if((board[i] != 'X' && board[i] != 'O') && board[i+3] == 'X' && board[i+6] == 'X' )
+        else if(ISEMPTY(i) && board[i+3] == 'X' && board[i+6] == 'X' )
         {
             play = i + 1;
             return 1;
@@ -321,34 +325,34 @@ int computerDefend()
     }
     
     //main diagonal
-    if(board[0] == 'X' && board[4] == 'X' && (board[8] != 'X' && board[8] != 'O'))
+    if(board[0] == 'X' && board[4] == 'X' && ISEMPTY(8))
     {
         play = 9;
         return 1;
     }
-    else if(board[0] == 'X' && (board[4] != 'X' && board[4] != 'O') && board[8] == 'X' )
+    else if(board[0] == 'X' &&  ISEMPTY(4) && board[8] == 'X' )
     {
         play = 5;
         return 1;
     }
-    else if((board[0] != 'X' && board[0] != 'O') && board[4] == 'X' && board[8] == 'X' )
+    else if( ISEMPTY(0) && board[4] == 'X' && board[8] == 'X' )
     {
         play = 1;
         return 1;
     }
 
     //second diagonal
-    if(board[2] == 'X' && board[4] == 'X' && (board[6] != 'X' && board[6] != 'O'))
+    if(board[2] == 'X' && board[4] == 'X' &&  ISEMPTY(6))
     {
         play = 7;
         return 1;
     }
-    else if(board[2] == 'X' && (board[4] != 'X' && board[4] != 'O') && board[6] == 'X' )
+    else if(board[2] == 'X' &&  ISEMPTY(4) && board[6] == 'X' )
     {
         play = 5;
         return 1;
     }
-    else if((board[2] != 'X' && board[2] != 'O') && board[4] == 'X' && board[6] == 'X' )
+    else if(ISEMPTY(2) && board[4] == 'X' && board[6] == 'X' )
     {
         play = 3;
         return 1;
@@ -444,12 +448,11 @@ int isVictory(char playerSymbol)
 
 int isTie()
 {
-    for(int i = 0; i < 9; i++)
+    for(int boardNum = 0; boardNum < 9; boardNum++)
     {
-        if(board[i] != 'X' && board[i] != 'O') //it means that the game hasn't finish yet
+        if(ISEMPTY(boardNum)) //it means that the game hasn't finish yet
             return 0;
     }
 
     return 1; //if it's a tie, returns TRUE 
 }
-
